@@ -6,22 +6,20 @@ interface User {
     email: string;
 }
 
-type SortColumn = keyof Omit<User, 'id'>;
+type SortColumn = 'name' | 'email'
 
 interface Props {
-    sortOrder: SortColumn;
+    sortOrder: string;
 }
 
 const UserTable = async ({sortOrder}: Props) => {
     const res = await fetch("https://jsonplaceholder.typicode.com/users", {cache: 'no-store'});
     const users: User[] = await res.json();
 
-    const sortUsers = (column: SortColumn) => {
-        if (column == null || column.length === 0) {
-            return;
-        }
+    const sortUsers = (column: string) => {
+        let columnName: SortColumn = column === 'name' || column === 'email' ? column : 'name';
         users.sort((user1, user2) => {
-            return user1[column].localeCompare(user2[column])
+            return user1[columnName].localeCompare(user2[columnName])
         });
     }
 
